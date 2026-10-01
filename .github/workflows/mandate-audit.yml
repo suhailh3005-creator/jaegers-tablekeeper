@@ -1,0 +1,29 @@
+name: Mandate Contamination Audit
+
+on:
+  push:
+    paths:
+      - 'mandates/**'
+  pull_request:
+    paths:
+      - 'mandates/**'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Audit Mandates for Track Specifics
+        shell: bash
+        run: |
+          FORBIDDEN_TERMS='tablekeeper|reservation|booking|restaurant|diner|opentable'
+
+          if grep -iE "\" mandates/*.md; then
+            echo "ERROR: Mandate contamination detected!"
+            exit 1
+          else
+            echo "SUCCESS: Mandate files are clean and generic."
+          fi
